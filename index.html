@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student Marklist</title>
+    <style>
+        body {
+            background-image: url(st.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            color: blue;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .table-container {
+            width: 90%;
+            max-width: 800px;
+            overflow-x: auto;
+            background: blue;
+            border-radius: 5px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%; 
+            color: white;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid white;
+            text-align: center;
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: center; 
+            flex-wrap: wrap; 
+            width: 90%;
+            max-width: 800px;
+            margin: 20px 0;
+        }
+
+        input {
+            width: 100%; 
+            max-width: 120px; 
+            margin: 5px; 
+            padding: 5px;
+            border: 1px solid blue;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center; 
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            color: blue;
+            background: yellow;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%; 
+            max-width: 200px; 
+        }
+
+        .remove-btn {
+            padding: 5px 10px;
+            color: white;
+            background: red;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        @media (max-width: 370px) {
+            .remove-btn{
+                padding: 0px;
+                font-size: 10px;
+            }
+        }
+        @media (max-width: 600px) {
+            input {
+                max-width: 50%;
+                margin-left: 25%;
+            }
+        }
+
+        @media (max-width: 400px) {
+            input {
+                max-width: 50%; 
+            }
+            button {
+                padding: 10px; 
+            }
+        }
+        @media (max-width: 652px) {
+            th, td {
+                padding: 3px;
+            }
+        }
+        @media (max-width: 525px) {
+           .table-container{  
+                width: 95%;
+            }
+        }
+        @media (max-width: 488px) {
+           .table-container{  
+                width: 98%;
+            }
+        }
+        @media (max-width: 488px) {
+          th,td{  
+                font-size: 10px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <script>
+        const student = document.createElement("h1");
+        student.innerHTML = "STUDENT MARKLIST:";
+        document.body.appendChild(student);
+
+        const tableContainer = document.createElement("div");
+        tableContainer.className = "table-container";
+        document.body.appendChild(tableContainer);
+
+        const table = document.createElement("table");
+        table.innerHTML = "<tr><th>s.no</th><th>name</th><th>mark1</th><th>mark2</th><th>mark3</th><th>mark4</th><th>mark5</th><th>total</th><th>action</th></tr>";
+        tableContainer.appendChild(table);
+
+        const inputContainer = document.createElement("div");
+        inputContainer.className = "input-container";
+        document.body.appendChild(inputContainer);
+
+        const form = document.createElement("form");
+        inputContainer.appendChild(form);
+
+        const inputs = [
+            { id: "input", type: "number", placeholder: "S.No", width: "35px" },
+            { id: "input1", type: "text", placeholder: "Name" },
+            { id: "input2", type: "number", placeholder: "Mark 1", max: 100 },
+            { id: "input3", type: "number", placeholder: "Mark 2", max: 100 },
+            { id: "input4", type: "number", placeholder: "Mark 3", max: 100 },
+            { id: "input5", type: "number", placeholder: "Mark 4", max: 100 },
+            { id: "input6", type: "number", placeholder: "Mark 5", max: 100 }
+        ];
+
+        inputs.forEach(input => {
+            const inputElement = document.createElement("input");
+            inputElement.id = input.id;
+            inputElement.type = input.type;
+            inputElement.placeholder = input.placeholder;
+            if (input.max) inputElement.max = input.max; 
+            form.appendChild(inputElement);
+        });
+
+        const buttonContainer = document.createElement("div");
+        buttonContainer.className = "button-container";
+        form.appendChild(buttonContainer);
+
+        const btn = document.createElement("button");
+        btn.innerHTML = "Submit";
+        buttonContainer.appendChild(btn); 
+
+        let sNo = 1;
+
+        btn.addEventListener("click", (event) => {
+            event.preventDefault();
+            const name = document.getElementById("input1").value;
+            const marks = [
+                parseFloat(document.getElementById("input2").value) || 0,
+                parseFloat(document.getElementById("input3").value) || 0,
+                parseFloat(document.getElementById("input4").value) || 0,
+                parseFloat(document.getElementById("input5").value) || 0,
+                parseFloat(document.getElementById("input6").value) || 0
+            ];
+
+            if (marks.some(mark => mark > 100)) {
+                alert("All marks must be less than or equal to 100.");
+                inputs.forEach(input => {
+                    document.getElementById(input.id).value = "";
+                });
+                return;
+            }
+
+            const total = marks.reduce((acc, mark) => acc + mark, 0);
+
+            const row = table.insertRow();
+            row.insertCell(0).innerHTML = sNo++;
+            row.insertCell(1).innerHTML = name;
+            marks.forEach(mark => row.insertCell().innerHTML = mark);
+            row.insertCell().innerHTML = total;
+
+            const removeBtn = document.createElement("button");
+            removeBtn.innerHTML = "Remove";
+            removeBtn.className = "remove-btn";
+            removeBtn.addEventListener("click", () => {
+                table.deleteRow(row.rowIndex);
+            });
+
+            row.insertCell().appendChild(removeBtn);
+
+            inputs.forEach(input => {
+                document.getElementById(input.id).value = "";
+            });
+        });
+
+    </script>
+
+</body>
+</html>
+
+ 
